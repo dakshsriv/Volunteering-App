@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { FiLink, FiMapPin, FiGlobe } from "react-icons/fi";
 
 export default async function Opportunities() {
   let opportunities: Array<{
@@ -8,6 +9,7 @@ export default async function Opportunities() {
     description: string;
     location: string;
     category: string;
+    environment: string;
     link: string;
     createdAt: Date;
   }> = [];
@@ -65,15 +67,26 @@ export default async function Opportunities() {
                   </p>
                 </div>
                 <h2 className="text-xl font-semibold text-slate-900">{opportunity.title}</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{opportunity.description}</p>
-                <p className="mt-4 text-sm font-medium text-sky-700">{opportunity.location}</p>
+                <div className="mt-3 rounded-lg bg-slate-50 p-3 shadow-sm">
+                  <p className="text-sm leading-7 text-slate-600">{opportunity.description}</p>
+                </div>
+                
+                <p className="mt-4 flex items-center gap-2 text-sm font-medium text-sky-700">
+                  <FiMapPin className="shrink-0" />
+                  <span>{opportunity.location}</span>
+                </p>
+                <p className="mt-4 flex items-center gap-2 text-sm text-slate-500">
+                  <FiGlobe className="shrink-0" />
+                  <span>{opportunity.environment}</span>
+                </p>
                 <a
                   href={opportunity.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-4 inline-flex text-sm font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 hover:text-sky-800"
+                  className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 hover:text-sky-800"
                 >
-                  Learn more
+                  <FiLink className="shrink-0" />
+                  See Opportunity
                 </a>
               </article>
             ))}

@@ -29,6 +29,7 @@ export async function POST(request: Request) {
   const title = typeof body.title === "string" ? body.title.trim() : "";
   const category = typeof body.category === "string" ? body.category.trim() : "";
   const link = typeof body.link === "string" ? body.link.trim() : "";
+  const environment = typeof body.environment === "string" ? body.environment.trim() : "";
   const locationMode = body.locationMode;
 
   if (!title || !category || !link) {
@@ -59,6 +60,7 @@ export async function POST(request: Request) {
       location: normalizedLocation,
       category,
       link,
+      environment: environment || "indoor", // Default to "indoor" if not provided
     },
   });
 
