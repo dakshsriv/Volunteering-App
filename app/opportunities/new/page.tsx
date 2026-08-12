@@ -50,16 +50,16 @@ export default function NewOpportunity() {
                 environment: online ? null : environment,
             }),
         })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        }).catch((error) => {
-            console.error("Error submitting form:", error);
-            alert("There was an error submitting the form. Please try again.");
-        });
-        
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            }).catch((error) => {
+                console.error("Error submitting form:", error);
+                alert("There was an error submitting the form. Please try again.");
+            });
+
         redirect("/opportunities");
 
     }
@@ -82,6 +82,7 @@ export default function NewOpportunity() {
                         <div>
                             <label htmlFor="title" className="block text-sm font-medium text-slate-700">
                                 Title
+                                <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -95,10 +96,12 @@ export default function NewOpportunity() {
                         <div>
                             <label htmlFor="description" className="block text-sm font-medium text-slate-700">
                                 Description
+                                <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                             </label>
                             <textarea
                                 id="description"
                                 name="description"
+                                required
                                 rows={4}
                                 maxLength={1000}
                                 className="mt-1 block w-full rounded-md border border-slate-300 bg-white py-2 px-3 shadow-sm focus:border-sky-500 focus:ring focus:ring-sky-500 focus:ring-opacity-50 sm:text-sm"
@@ -111,6 +114,9 @@ export default function NewOpportunity() {
                         <div className="flex items-center gap-4">
                             <label htmlFor="location" className="block text-sm font-medium text-slate-700">
                                 Location
+                                {(!online && !locationUnspecified) && (
+                                    <span className="text-red-600 ml-1" aria-hidden="true">*</span>
+                                )}
                             </label>
                             <input
                                 type="text"
@@ -173,6 +179,7 @@ export default function NewOpportunity() {
                         <div>
                             <label htmlFor="link" className="block text-sm font-medium text-slate-700">
                                 Link
+                                <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                             </label>
                             <input
                                 type="text"
@@ -186,6 +193,7 @@ export default function NewOpportunity() {
                         <div>
                             <label htmlFor="category" className="block text-sm font-medium text-slate-700">
                                 Category
+                                <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                             </label>
                             <select
                                 id="category"
@@ -214,7 +222,7 @@ export default function NewOpportunity() {
                                     type="radio"
                                     id="indoor"
                                     name="environment"
-                                    value="indoor"
+                                    value="Indoor"
                                     className="h-4 w-4 text-sky-600 focus:ring-sky-500"
                                     defaultChecked={true}
                                 />
@@ -227,7 +235,7 @@ export default function NewOpportunity() {
                                     type="radio"
                                     id="outdoor"
                                     name="environment"
-                                    value="outdoor"
+                                    value="Outdoor"
                                     className="h-4 w-4 text-sky-600 focus:ring-sky-500"
                                 />
                                 <label htmlFor="outdoor" className="ml-2 text-sm text-slate-700">
@@ -239,7 +247,7 @@ export default function NewOpportunity() {
                                     type="radio"
                                     id="both"
                                     name="environment"
-                                    value="both"
+                                    value="Both"
                                     className="h-4 w-4 text-sky-600 focus:ring-sky-500"
                                 />
                                 <label htmlFor="both" className="ml-2 text-sm text-slate-700">
