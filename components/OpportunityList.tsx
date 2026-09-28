@@ -11,11 +11,13 @@ import { OpportunityModal } from "./OpportunityModal";
 interface OpportunityListProps {
   opportunities: Opportunity[];
   dbConnected: boolean;
+  usingDemoData?: boolean;
 }
 
 export function OpportunityList({
   opportunities,
   dbConnected,
+  usingDemoData,
 }: OpportunityListProps) {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -77,6 +79,12 @@ export function OpportunityList({
         <p className="text-sm text-amber-600">
           Database not connected. Set DATABASE_URL to see live opportunities.
         </p>
+      )}
+
+      {usingDemoData && (
+        <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-800">
+          Showing sample opportunities. Connect a database to see live listings.
+        </div>
       )}
 
       {filtered.length === 0 ? (

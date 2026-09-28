@@ -1,23 +1,27 @@
 import type { Opportunity } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { DEMO_OPPORTUNITIES } from "@/lib/demoOpportunities";
 import { OpportunityList } from "@/components/OpportunityList";
 import { SuggestOpportunityButton } from "@/components/SuggestOpportunityButton";
 
 export const dynamic = "force-dynamic";
 
 export default async function OpportunitiesPage() {
-  let opportunities: Opportunity[] = [];
+  let dbOpportunities: Opportunity[] = [];
   const dbConnected = Boolean(prisma);
 
   if (prisma) {
     try {
-      opportunities = await prisma.opportunity.findMany({
+      dbOpportunities = await prisma.opportunity.findMany({
         orderBy: { createdAt: "desc" },
       });
     } catch {
-      opportunities = [];
+      dbOpportunities = [];
     }
   }
+
+  const usingDemoData = dbOpportunities.length === 0;
+  const opportunities = usingDemoData ? DEMO_OPPORTUNITIES : dbOpportunities;
 
   return (
     <div className="flex flex-1 justify-center px-4 py-10 sm:px-6 lg:px-8">
@@ -41,7 +45,11 @@ export default async function OpportunitiesPage() {
           </div>
         </div>
 
-        <OpportunityList opportunities={opportunities} dbConnected={dbConnected} />
+        <OpportunityList
+          opportunities={opportunities}
+          dbConnected={dbConnected}
+          usingDemoData={usingDemoData}
+        />
       </main>
     </div>
   );
