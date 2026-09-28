@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 
 export default async function OpportunitiesPage() {
   let dbOpportunities: Opportunity[] = [];
-  const dbConnected = Boolean(prisma);
 
   if (prisma) {
     try {
@@ -20,8 +19,8 @@ export default async function OpportunitiesPage() {
     }
   }
 
-  const usingDemoData = dbOpportunities.length === 0;
-  const opportunities = usingDemoData ? DEMO_OPPORTUNITIES : dbOpportunities;
+  const opportunities =
+    dbOpportunities.length > 0 ? dbOpportunities : DEMO_OPPORTUNITIES;
 
   return (
     <div className="flex flex-1 justify-center px-4 py-10 sm:px-6 lg:px-8">
@@ -35,21 +34,10 @@ export default async function OpportunitiesPage() {
               Find your next way to help
             </h1>
           </div>
-          <div className="flex flex-col items-start gap-2 sm:items-end">
-            <SuggestOpportunityButton />
-            <p className="text-sm text-slate-600">
-              {dbConnected
-                ? "Connected to PostgreSQL through Prisma."
-                : "Set DATABASE_URL to connect this page to PostgreSQL."}
-            </p>
-          </div>
+          <SuggestOpportunityButton />
         </div>
 
-        <OpportunityList
-          opportunities={opportunities}
-          dbConnected={dbConnected}
-          usingDemoData={usingDemoData}
-        />
+        <OpportunityList opportunities={opportunities} />
       </main>
     </div>
   );

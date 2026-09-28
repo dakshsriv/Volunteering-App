@@ -10,15 +10,9 @@ import { OpportunityModal } from "./OpportunityModal";
 
 interface OpportunityListProps {
   opportunities: Opportunity[];
-  dbConnected: boolean;
-  usingDemoData?: boolean;
 }
 
-export function OpportunityList({
-  opportunities,
-  dbConnected,
-  usingDemoData,
-}: OpportunityListProps) {
+export function OpportunityList({ opportunities }: OpportunityListProps) {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [commitmentFilter, setCommitmentFilter] = useState("");
@@ -75,18 +69,6 @@ export function OpportunityList({
         </select>
       </div>
 
-      {!dbConnected && (
-        <p className="text-sm text-amber-600">
-          Database not connected. Set DATABASE_URL to see live opportunities.
-        </p>
-      )}
-
-      {usingDemoData && (
-        <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-800">
-          Showing sample opportunities. Connect a database to see live listings.
-        </div>
-      )}
-
       {filtered.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-sky-200 bg-white/70 p-10 text-center text-slate-600 shadow-sm">
           No opportunities match your filters.
@@ -100,10 +82,10 @@ export function OpportunityList({
               className="cursor-pointer rounded-3xl border border-sky-100 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="mb-3 flex items-center justify-between gap-3">
-                <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
+                <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-blue-900">
                   {opp.category}
                 </span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
                   {opp.commitment}
                 </span>
               </div>
