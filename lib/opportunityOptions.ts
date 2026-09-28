@@ -1,15 +1,19 @@
 export const VOLUNTEER_CATEGORIES = [
-  "Education & Tutoring",
-  "Food & Hunger Relief",
-  "Environment & Sustainability",
-  "Community Outreach",
+  "STEM",
+  "Tutoring",
+  "Environment",
+  "Community",
+  "Sports",
+  "Arts & Tech",
   "Healthcare Support",
   "Animal Welfare",
-  "Elderly Support",
-  "Disaster Relief",
-  "Youth Mentorship",
-  "Arts & Culture",
   "Other",
+] as const;
+
+export const COMMITMENT_TYPES = [
+  "One-Time",
+  "Weekly",
+  "Flexible",
 ] as const;
 
 export const UNSPECIFIED_LOCATION_LABEL = "Unspecified";

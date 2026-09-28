@@ -5,7 +5,7 @@ export default function NavBar() {
     <nav className="border-b border-sky-100 bg-white/80 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl items-center justify-between">
         <Link href="/" className="text-lg font-semibold tracking-tight text-slate-900">
-          App
+          Volunteer Connect
         </Link>
         <ul className="flex items-center gap-2 rounded-full border border-sky-100 bg-sky-50/80 p-1">
           <li>

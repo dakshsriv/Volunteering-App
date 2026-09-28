@@ -1,18 +1,13 @@
+import type { Opportunity } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { FiLink, FiMapPin, FiGlobe } from "react-icons/fi";
+import { OpportunityList } from "@/components/OpportunityList";
+import { SuggestOpportunityButton } from "@/components/SuggestOpportunityButton";
 
-export default async function Opportunities() {
-  let opportunities: Array<{
-    id: number;
-    title: string;
-    description: string;
-    location: string;
-    category: string;
-    environment: string;
-    link: string;
-    createdAt: Date;
-  }> = [];
+export const dynamic = "force-dynamic";
+
+export default async function OpportunitiesPage() {
+  let opportunities: Opportunity[] = [];
+  const dbConnected = Boolean(prisma);
 
   if (prisma) {
     try {
@@ -26,72 +21,27 @@ export default async function Opportunities() {
 
   return (
     <div className="flex flex-1 justify-center px-4 py-10 sm:px-6 lg:px-8">
-      <main className="w-full max-w-6xl">
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <main className="w-full max-w-6xl space-y-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-600">
               Opportunities
             </p>
-            <div className="flex">
-              <h1 className="text-3xl font-semibold text-slate-900">
-                Find your next way to help
-              </h1>
-              <button type="button" className="ml-4 rounded-full bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-700">
-                <Link href="/opportunities/new">Suggest Opportunity</Link>
-              </button>
-            </div>
-          
+            <h1 className="text-3xl font-semibold text-slate-900">
+              Find your next way to help
+            </h1>
           </div>
-          <p className="text-sm text-slate-600">
-            {prisma ? "Connected to PostgreSQL through Prisma." : "Set DATABASE_URL to connect this page to PostgreSQL."}
-          </p>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <SuggestOpportunityButton />
+            <p className="text-sm text-slate-600">
+              {dbConnected
+                ? "Connected to PostgreSQL through Prisma."
+                : "Set DATABASE_URL to connect this page to PostgreSQL."}
+            </p>
+          </div>
         </div>
 
-        {opportunities.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-sky-200 bg-white/70 p-10 text-center text-slate-600 shadow-sm">
-            No opportunities yet. Add a record to your database to see it here.
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {opportunities.map((opportunity) => (
-              <article
-                key={opportunity.id}
-                className="rounded-3xl border border-sky-100 bg-white/80 p-6 shadow-sm"
-              >
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
-                    {opportunity.category}
-                  </span>
-                  <p className="text-xs text-slate-500">
-                    {new Date(opportunity.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <h2 className="text-xl font-semibold text-slate-900">{opportunity.title}</h2>
-                <div className="mt-3 rounded-lg bg-slate-50 p-3 shadow-sm">
-                  <p className="text-sm leading-7 text-slate-600">{opportunity.description}</p>
-                </div>
-                
-                <p className="mt-4 flex items-center gap-2 text-sm font-medium text-sky-700">
-                  <FiMapPin className="shrink-0" />
-                  <span>{opportunity.location}</span>
-                </p>
-                <p className="mt-4 flex items-center gap-2 text-sm text-slate-500">
-                  <FiGlobe className="shrink-0" />
-                  <span>{opportunity.environment}</span>
-                </p>
-                <a
-                  href={opportunity.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-sky-700 underline decoration-sky-300 underline-offset-4 hover:text-sky-800"
-                >
-                  <FiLink className="shrink-0" />
-                  See Opportunity
-                </a>
-              </article>
-            ))}
-          </div>
-        )}
+        <OpportunityList opportunities={opportunities} dbConnected={dbConnected} />
       </main>
     </div>
   );

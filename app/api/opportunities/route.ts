@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { UNSPECIFIED_LOCATION_LABEL, VOLUNTEER_CATEGORIES } from "@/lib/opportunityOptions";
+import {
+  COMMITMENT_TYPES,
+  UNSPECIFIED_LOCATION_LABEL,
+  VOLUNTEER_CATEGORIES,
+} from "@/lib/opportunityOptions";
 
 export async function GET() {
   if (!prisma) {
@@ -26,41 +30,82 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const title = typeof body.title === "string" ? body.title.trim() : "";
-  const category = typeof body.category === "string" ? body.category.trim() : "";
-  const link = typeof body.link === "string" ? body.link.trim() : "";
-  const environment = typeof body.environment === "string" ? body.environment.trim() : "";
-  const locationMode = body.locationMode;
 
-  if (!title || !category || !link) {
+  const title = typeof body.title === "string" ? body.title.trim() : "";
+  const organization =
+    typeof body.organization === "string" ? body.organization.trim() : "";
+  const description =
+    typeof body.description === "string" ? body.description.trim() : "";
+  const requirements =
+    typeof body.requirements === "string" ? body.requirements.trim() : "";
+  const location =
+    typeof body.location === "string" && body.location.trim()
+      ? body.location.trim()
+      : UNSPECIFIED_LOCATION_LABEL;
+  const category = typeof body.category === "string" ? body.category.trim() : "";
+  const commitment =
+    typeof body.commitment === "string" ? body.commitment.trim() : "";
+  const link = typeof body.link === "string" ? body.link.trim() : "";
+  const hours =
+    typeof body.hours === "number"
+      ? body.hours
+      : Number.parseInt(
+          typeof body.hours === "string" ? body.hours : "",
+          10
+        );
+
+  if (
+    !title ||
+    !organization ||
+    !description ||
+    !category ||
+    !commitment ||
+    !link ||
+    Number.isNaN(hours) ||
+    hours <= 0
+  ) {
     return NextResponse.json(
-      { error: "title, category, and link are required" },
+      {
+        error:
+          "title, organization, description, category, commitment, link, and a positive hours value are required",
+      },
       { status: 400 }
     );
   }
 
-  if (!VOLUNTEER_CATEGORIES.includes(category as (typeof VOLUNTEER_CATEGORIES)[number])) {
+  if (
+    !VOLUNTEER_CATEGORIES.includes(
+      category as (typeof VOLUNTEER_CATEGORIES)[number]
+    )
+  ) {
     return NextResponse.json(
       { error: "category must be one of the supported values" },
       { status: 400 }
     );
   }
 
-  const normalizedLocation =
-    locationMode === "online"
-      ? "Online"
-      : locationMode === "unspecified"
-        ? UNSPECIFIED_LOCATION_LABEL
-        : body.location;
+  if (
+    !COMMITMENT_TYPES.includes(
+      commitment as (typeof COMMITMENT_TYPES)[number]
+    )
+  ) {
+    return NextResponse.json(
+      { error: "commitment must be one of the supported values" },
+      { status: 400 }
+    );
+  }
 
   const opportunity = await prisma.opportunity.create({
     data: {
       title,
-      description: body.description,
-      location: normalizedLocation,
+      organization,
+      description,
+      requirements,
+      location,
       category,
+      commitment,
+      hours,
       link,
-      environment: environment || "indoor", // Default to "indoor" if not provided
     },
   });
 

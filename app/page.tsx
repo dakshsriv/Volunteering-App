@@ -1,3 +1,5 @@
+import { HoursCalculator } from "@/components/HoursCalculator";
+
 export default function Home() {
   return (
     <div className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
@@ -32,21 +34,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-[28px] bg-linear-to-br from-sky-500 via-sky-600 to-indigo-600 p-6 text-white shadow-lg">
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-100">
-                Featured this week
-              </p>
-              <div className="mt-5 space-y-4">
-                <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
-                  <p className="text-lg font-semibold">Community Garden Day</p>
-                  <p className="mt-1 text-sm text-sky-50">Help refresh shared spaces and connect with neighbors.</p>
-                </div>
-                <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
-                  <p className="text-lg font-semibold">Youth Mentorship Program</p>
-                  <p className="mt-1 text-sm text-sky-50">Share your time and encouragement with local students.</p>
-                </div>
-              </div>
-            </div>
+            <HoursCalculator />
           </div>
         </section>
 
