@@ -1,6 +1,7 @@
 import type { Opportunity } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEMO_OPPORTUNITIES } from "@/lib/demoOpportunities";
+import { seedOpportunities } from "@/lib/seed";
 import { OpportunityList } from "@/components/OpportunityList";
 import { SuggestOpportunityButton } from "@/components/SuggestOpportunityButton";
 
@@ -14,6 +15,13 @@ export default async function OpportunitiesPage() {
       dbOpportunities = await prisma.opportunity.findMany({
         orderBy: { createdAt: "desc" },
       });
+
+      if (dbOpportunities.length === 0) {
+        await seedOpportunities();
+        dbOpportunities = await prisma.opportunity.findMany({
+          orderBy: { createdAt: "desc" },
+        });
+      }
     } catch {
       dbOpportunities = [];
     }
