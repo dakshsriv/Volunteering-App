@@ -14,11 +14,18 @@ export async function GET() {
     );
   }
 
-  const opportunities = await prisma.opportunity.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  try {
+    const opportunities = await prisma.opportunity.findMany({
+      orderBy: { createdAt: "desc" },
+    });
 
-  return NextResponse.json(opportunities);
+    return NextResponse.json(opportunities);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Database query failed" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(request: Request) {
@@ -95,19 +102,26 @@ export async function POST(request: Request) {
     );
   }
 
-  const opportunity = await prisma.opportunity.create({
-    data: {
-      title,
-      organization,
-      description,
-      requirements,
-      location,
-      category,
-      commitment,
-      hours,
-      link,
-    },
-  });
+  try {
+    const opportunity = await prisma.opportunity.create({
+      data: {
+        title,
+        organization,
+        description,
+        requirements,
+        location,
+        category,
+        commitment,
+        hours,
+        link,
+      },
+    });
 
-  return NextResponse.json(opportunity, { status: 201 });
+    return NextResponse.json(opportunity, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Database write failed" },
+      { status: 500 }
+    );
+  }
 }
