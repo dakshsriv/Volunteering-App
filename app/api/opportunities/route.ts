@@ -16,6 +16,7 @@ export async function GET() {
 
   try {
     const opportunities = await prisma.opportunity.findMany({
+      where: { status: "approved" },
       orderBy: { createdAt: "desc" },
     });
 
@@ -114,6 +115,7 @@ export async function POST(request: Request) {
         commitment,
         hours,
         link,
+        status: "pending",
       },
     });
 

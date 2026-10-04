@@ -13,12 +13,14 @@ export default async function OpportunitiesPage() {
   if (prisma) {
     try {
       dbOpportunities = await prisma.opportunity.findMany({
+        where: { status: "approved" },
         orderBy: { createdAt: "desc" },
       });
 
       if (dbOpportunities.length === 0) {
         await seedOpportunities();
         dbOpportunities = await prisma.opportunity.findMany({
+          where: { status: "approved" },
           orderBy: { createdAt: "desc" },
         });
       }

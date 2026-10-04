@@ -1,5 +1,12 @@
 import type { Opportunity } from "@prisma/client";
 
+const base = {
+  status: "approved" as const,
+  sourceId: null,
+  sourceUrl: null,
+  reviewedAt: null,
+};
+
 export const DEMO_OPPORTUNITIES: Opportunity[] = [
   {
     id: 1,
@@ -14,6 +21,7 @@ export const DEMO_OPPORTUNITIES: Opportunity[] = [
       "Basic programming knowledge (Python/Scratch) and good communication skills.",
     location: "Central Branch Library",
     link: "https://forms.gle/demo-library-stem",
+    ...base,
     createdAt: new Date("2026-09-01T10:00:00.000Z"),
     updatedAt: new Date("2026-09-01T10:00:00.000Z"),
   },
@@ -29,6 +37,7 @@ export const DEMO_OPPORTUNITIES: Opportunity[] = [
     requirements: "Ability to lift up to 15 lbs. Closed-toe shoes required.",
     location: "Community Hub North",
     link: "https://forms.gle/demo-food-bank",
+    ...base,
     createdAt: new Date("2026-09-02T10:00:00.000Z"),
     updatedAt: new Date("2026-09-02T10:00:00.000Z"),
   },
@@ -45,6 +54,7 @@ export const DEMO_OPPORTUNITIES: Opportunity[] = [
       "Gloves and garbage bags provided on-site. Dress for outdoor weather.",
     location: "Lions Valley Park",
     link: "https://forms.gle/demo-trail-cleanup",
+    ...base,
     createdAt: new Date("2026-09-03T10:00:00.000Z"),
     updatedAt: new Date("2026-09-03T10:00:00.000Z"),
   },
@@ -61,6 +71,7 @@ export const DEMO_OPPORTUNITIES: Opportunity[] = [
       "Grade 11 or 12 student with a minimum 85% average in target subject.",
     location: "School Library - Room 204",
     link: "https://forms.gle/demo-peer-tutoring",
+    ...base,
     createdAt: new Date("2026-09-04T10:00:00.000Z"),
     updatedAt: new Date("2026-09-04T10:00:00.000Z"),
   },
@@ -77,6 +88,7 @@ export const DEMO_OPPORTUNITIES: Opportunity[] = [
       "Interest in sound, lighting, or video production. Training provided on-site.",
     location: "School Auditorium",
     link: "https://forms.gle/demo-stage-crew",
+    ...base,
     createdAt: new Date("2026-09-05T10:00:00.000Z"),
     updatedAt: new Date("2026-09-05T10:00:00.000Z"),
   },
@@ -93,6 +105,7 @@ export const DEMO_OPPORTUNITIES: Opportunity[] = [
       "Enthusiastic attitude and basic knowledge of basketball rules.",
     location: "Community YMCA Gym",
     link: "https://forms.gle/demo-ymca-sports",
+    ...base,
     createdAt: new Date("2026-09-06T10:00:00.000Z"),
     updatedAt: new Date("2026-09-06T10:00:00.000Z"),
   },

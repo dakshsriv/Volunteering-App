@@ -20,6 +20,45 @@ model Opportunity {
   commitment   String
   hours        Int
   link         String
+  status       String   @default("approved")
+  sourceId     Int?
+  sourceUrl    String?
+  reviewedAt   DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  source       OpportunitySource? @relation(fields: [sourceId], references: [id])
+  applyEvents  ApplyEvent[]
+}
+
+model OpportunitySource {
+  id            Int           @id @default(autoincrement())
+  name          String
+  baseUrl       String
+  type          String
+  consentStatus String
+  enabled       Boolean       @default(false)
+  lastScrapedAt DateTime?
+  createdAt     DateTime      @default(now())
+  opportunities Opportunity[]
+}
+
+model ApplyEvent {
+  id            Int         @id @default(autoincrement())
+  opportunityId Int
+  anonymousId   String
+  requestId     String
+  ipHash        String
+  userAgent     String
+  createdAt     DateTime    @default(now())
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+
+  @@unique([anonymousId, opportunityId])
+}
+
+model BlockedAttempt {
+  id          Int      @id @default(autoincrement())
+  anonymousId String?
+  ipHash      String
+  reason      String
+  createdAt   DateTime @default(now())
 }
