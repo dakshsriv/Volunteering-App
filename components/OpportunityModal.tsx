@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import type { Opportunity } from "@prisma/client";
 import { FiMapPin, FiX } from "react-icons/fi";
+import { ApplyLink } from "./ApplyLink";
 
 interface OpportunityModalProps {
   opportunity: Opportunity;
@@ -81,14 +82,13 @@ export function OpportunityModal({ opportunity, onClose }: OpportunityModalProps
         </div>
 
         <div className="mt-8 flex justify-end">
-          <a
+          <ApplyLink
+            opportunityId={opportunity.id}
             href={opportunity.link}
-            target="_blank"
-            rel="noopener noreferrer"
             className="rounded-full bg-sky-600 px-6 py-3 text-center font-medium text-white transition hover:bg-sky-700"
           >
             Apply Externally
-          </a>
+          </ApplyLink>
         </div>
       </div>
     </div>
