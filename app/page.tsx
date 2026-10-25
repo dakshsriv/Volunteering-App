@@ -1,6 +1,37 @@
+import type { Opportunity } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { DEMO_OPPORTUNITIES } from "@/lib/demoOpportunities";
+import { seedOpportunities } from "@/lib/seed";
 import { HoursCalculator } from "@/components/HoursCalculator";
+import { RecommendedOpportunities } from "@/components/RecommendedOpportunities";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  let dbOpportunities: Opportunity[] = [];
+
+  if (prisma) {
+    try {
+      dbOpportunities = await prisma.opportunity.findMany({
+        where: { status: "approved" },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (dbOpportunities.length === 0) {
+        await seedOpportunities();
+        dbOpportunities = await prisma.opportunity.findMany({
+          where: { status: "approved" },
+          orderBy: { createdAt: "desc" },
+        });
+      }
+    } catch {
+      dbOpportunities = [];
+    }
+  }
+
+  const opportunities =
+    dbOpportunities.length > 0 ? dbOpportunities : DEMO_OPPORTUNITIES;
+
   return (
     <div className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
       <main className="w-full max-w-6xl space-y-8">
@@ -37,6 +68,8 @@ export default function Home() {
             <HoursCalculator />
           </div>
         </section>
+
+        <RecommendedOpportunities opportunities={opportunities} />
 
         <section id="benefits" className="grid gap-6 md:grid-cols-3">
           {[

@@ -6,6 +6,7 @@ import {
   COMMITMENT_TYPES,
   VOLUNTEER_CATEGORIES,
 } from "@/lib/opportunityOptions";
+import { ApplyLink } from "./ApplyLink";
 import { OpportunityModal } from "./OpportunityModal";
 
 interface OpportunityListProps {
@@ -102,15 +103,14 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
                 <p className="text-sm font-semibold text-slate-800">
                   {opp.hours} hours
                 </p>
-                <a
+                <ApplyLink
+                  opportunityId={opp.id}
                   href={opp.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   className="rounded-full bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-700"
                 >
                   Apply
-                </a>
+                </ApplyLink>
               </div>
             </article>
           ))}
