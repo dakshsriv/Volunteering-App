@@ -13,11 +13,13 @@ model Opportunity {
   id           Int      @id @default(autoincrement())
   title        String
   organization String
+  contactInfo  String?
   description  String
   requirements String
   location     String
   category     String
   commitment   String
+  eventDate    DateTime?
   hours        Int
   link         String
   status       String   @default("approved")

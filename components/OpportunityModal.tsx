@@ -25,6 +25,7 @@ export function OpportunityModal({ opportunity, onClose }: OpportunityModalProps
       onClick={onClose}
       role="dialog"
       aria-modal="true"
+      aria-labelledby="opportunity-modal-title"
     >
       <div
         className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-sky-100 bg-white p-6 shadow-2xl sm:p-8"
@@ -35,7 +36,10 @@ export function OpportunityModal({ opportunity, onClose }: OpportunityModalProps
             <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
               {opportunity.category}
             </span>
-            <h2 className="mt-3 text-2xl font-semibold text-slate-900">
+            <h2
+              id="opportunity-modal-title"
+              className="mt-3 text-2xl font-semibold text-slate-900"
+            >
               {opportunity.title}
             </h2>
             <p className="mt-1 text-base font-medium text-sky-700">
