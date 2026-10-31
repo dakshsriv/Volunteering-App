@@ -12,17 +12,34 @@ export default async function OpportunitiesPage() {
 
   if (prisma) {
     try {
-      dbOpportunities = await prisma.opportunity.findMany({
+      const rows = await prisma.opportunity.findMany({
         where: { status: "approved" },
         orderBy: { createdAt: "desc" },
+        include: { _count: { select: { applyEvents: true } } },
       });
+
+      dbOpportunities = rows.map(({ _count, ...opp }) => ({
+        ...opp,
+        badges:
+          _count.applyEvents >= 3
+            ? [...opp.badges, "Popular"]
+            : opp.badges,
+      }));
 
       if (dbOpportunities.length === 0) {
         await seedOpportunities();
-        dbOpportunities = await prisma.opportunity.findMany({
+        const seeded = await prisma.opportunity.findMany({
           where: { status: "approved" },
           orderBy: { createdAt: "desc" },
+          include: { _count: { select: { applyEvents: true } } },
         });
+        dbOpportunities = seeded.map(({ _count, ...opp }) => ({
+          ...opp,
+          badges:
+            _count.applyEvents >= 3
+              ? [...opp.badges, "Popular"]
+              : opp.badges,
+        }));
       }
     } catch {
       dbOpportunities = [];

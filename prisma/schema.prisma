@@ -21,6 +21,7 @@ model Opportunity {
   hours        Int
   link         String
   status       String   @default("approved")
+  badges       String[] @default([])
   sourceId     Int?
   sourceUrl    String?
   reviewedAt   DateTime?

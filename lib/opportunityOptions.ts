@@ -16,4 +16,6 @@ export const COMMITMENT_TYPES = [
   "Flexible",
 ] as const;
 
+export const BADGES = ["Eco-Friendly", "Popular"] as const;
+
 export const UNSPECIFIED_LOCATION_LABEL = "Unspecified";

@@ -5,6 +5,7 @@ const base = {
   sourceId: null,
   sourceUrl: null,
   reviewedAt: null,
+  badges: [] as string[],
 };
 
 export const DEMO_OPPORTUNITIES: Opportunity[] = [
@@ -55,6 +56,7 @@ export const DEMO_OPPORTUNITIES: Opportunity[] = [
     location: "Lions Valley Park",
     link: "https://forms.gle/demo-trail-cleanup",
     ...base,
+    badges: ["Eco-Friendly"],
     createdAt: new Date("2026-09-03T10:00:00.000Z"),
     updatedAt: new Date("2026-09-03T10:00:00.000Z"),
   },

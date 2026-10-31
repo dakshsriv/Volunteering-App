@@ -34,6 +34,7 @@ export async function seedOpportunities(): Promise<SeedResult> {
           commitment: opp.commitment,
           hours: opp.hours,
           link: opp.link,
+          badges: opp.badges,
           status: "approved",
         },
       });
