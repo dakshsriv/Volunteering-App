@@ -27,11 +27,13 @@ export async function seedOpportunities(): Promise<SeedResult> {
         data: {
           title: opp.title,
           organization: opp.organization,
+          contactInfo: opp.contactInfo,
           description: opp.description,
           requirements: opp.requirements,
           location: opp.location,
           category: opp.category,
           commitment: opp.commitment,
+          eventDate: opp.eventDate,
           hours: opp.hours,
           link: opp.link,
           badges: opp.badges,

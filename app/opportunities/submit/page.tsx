@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import {
   BADGES,
@@ -79,12 +80,12 @@ export default function SubmitOpportunityPage() {
             <p className="mt-2 text-green-800">
               A club mentor will review it before it goes live.
             </p>
-            <a
+            <Link
               href="/opportunities"
               className="mt-6 inline-block rounded-full bg-sky-600 px-6 py-3 font-medium text-white transition hover:bg-sky-700"
             >
               Back to opportunities
-            </a>
+            </Link>
           </div>
         ) : (
           <form

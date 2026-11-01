@@ -43,6 +43,8 @@ export async function POST(request: Request) {
   const title = typeof body.title === "string" ? body.title.trim() : "";
   const organization =
     typeof body.organization === "string" ? body.organization.trim() : "";
+  const contactInfo =
+    typeof body.contactInfo === "string" ? body.contactInfo.trim() : null;
   const description =
     typeof body.description === "string" ? body.description.trim() : "";
   const requirements =
@@ -54,6 +56,10 @@ export async function POST(request: Request) {
   const category = typeof body.category === "string" ? body.category.trim() : "";
   const commitment =
     typeof body.commitment === "string" ? body.commitment.trim() : "";
+  const eventDate =
+    typeof body.eventDate === "string" && body.eventDate.trim()
+      ? new Date(body.eventDate)
+      : null;
   const link = typeof body.link === "string" ? body.link.trim() : "";
   const hours =
     typeof body.hours === "number"
@@ -91,6 +97,13 @@ export async function POST(request: Request) {
     );
   }
 
+  if (eventDate && Number.isNaN(eventDate.getTime())) {
+    return NextResponse.json(
+      { error: "eventDate must be a valid date and time" },
+      { status: 400 }
+    );
+  }
+
   if (
     !VOLUNTEER_CATEGORIES.includes(
       category as (typeof VOLUNTEER_CATEGORIES)[number]
@@ -118,11 +131,13 @@ export async function POST(request: Request) {
       data: {
         title,
         organization,
+        contactInfo,
         description,
         requirements,
         location,
         category,
         commitment,
+        eventDate,
         hours,
         link,
         badges,
