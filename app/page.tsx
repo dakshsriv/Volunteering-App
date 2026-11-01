@@ -1,4 +1,5 @@
 import type { Opportunity } from "@prisma/client";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { DEMO_OPPORTUNITIES } from "@/lib/demoOpportunities";
 import { seedOpportunities } from "@/lib/seed";
@@ -50,18 +51,18 @@ export default async function Home() {
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <a
+                <Link
                   href="/opportunities"
                   className="rounded-full bg-sky-600 px-6 py-3 text-center font-medium text-white transition-all duration-200 hover:scale-105 hover:bg-sky-700 hover:shadow-lg"
                 >
                   Explore Opportunities
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#benefits"
                   className="rounded-full border border-sky-200 bg-sky-50 px-6 py-3 text-center font-medium text-sky-700 transition-all duration-200 hover:scale-105 hover:bg-sky-100 hover:shadow-md"
                 >
                   Why it matters
-                </a>
+                </Link>
               </div>
             </div>
 

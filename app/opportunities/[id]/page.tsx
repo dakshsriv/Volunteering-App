@@ -62,6 +62,18 @@ export default async function OpportunityPage({
             <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
               {opportunity.category}
             </span>
+            {opportunity.badges.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {opportunity.badges.map((badge) => (
+                  <span
+                    key={badge}
+                    className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-800"
+                  >
+                    {badge}
+                  </span>
+                ))}
+              </div>
+            )}
             <h1 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">
               {opportunity.title}
             </h1>

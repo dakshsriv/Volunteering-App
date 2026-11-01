@@ -20,7 +20,6 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
   const [dateFilter, setDateFilter] = useState("");
   const [minimumHours, setMinimumHours] = useState("");
   const [badgeFilter, setBadgeFilter] = useState("");
-  const [selected, setSelected] = useState<Opportunity | null>(null);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
