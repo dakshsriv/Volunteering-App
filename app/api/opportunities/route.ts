@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import {
+  BADGES,
   COMMITMENT_TYPES,
   UNSPECIFIED_LOCATION_LABEL,
   VOLUNTEER_CATEGORIES,
@@ -68,6 +69,15 @@ export async function POST(request: Request) {
           10
         );
 
+  const badges = Array.isArray(body.badges)
+    ? body.badges.filter(
+        (b: unknown): b is string =>
+          typeof b === "string" &&
+          BADGES.includes(b as (typeof BADGES)[number]) &&
+          b !== "Popular"
+      )
+    : [];
+
   if (
     !title ||
     !organization ||
@@ -130,6 +140,7 @@ export async function POST(request: Request) {
         eventDate,
         hours,
         link,
+        badges,
         status: "pending",
       },
     });

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Opportunity } from "@prisma/client";
 import {
+  BADGES,
   COMMITMENT_TYPES,
   VOLUNTEER_CATEGORIES,
 } from "@/lib/opportunityOptions";
@@ -18,6 +19,8 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
   const [commitmentFilter, setCommitmentFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [minimumHours, setMinimumHours] = useState("");
+  const [badgeFilter, setBadgeFilter] = useState("");
+  const [selected, setSelected] = useState<Opportunity | null>(null);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -34,14 +37,20 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
       const matchesDate =
         !dateFilter ||
         (opp.eventDate && opp.eventDate.toISOString().slice(0, 10) === dateFilter);
+
       const matchesDuration =
         !minimumHours || opp.hours >= Number.parseInt(minimumHours, 10);
+
+      const matchesBadge =
+        !badgeFilter || opp.badges.includes(badgeFilter);
+
       return (
         matchesSearch &&
         matchesCategory &&
         matchesCommitment &&
         matchesDate &&
-        matchesDuration
+        matchesDuration &&
+        matchesBadge
       );
     });
   }, [
@@ -51,8 +60,8 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
     commitmentFilter,
     dateFilter,
     minimumHours,
+    badgeFilter,
   ]);
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 rounded-3xl border border-sky-100 bg-white/80 p-4 shadow-sm sm:flex-row sm:items-center">
@@ -105,6 +114,18 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
             </option>
           ))}
         </select>
+        <select
+          value={badgeFilter}
+          onChange={(e) => setBadgeFilter(e.target.value)}
+          className="w-full rounded-xl border border-sky-200 bg-sky-50/50 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 sm:w-44"
+        >
+          <option value="">All badges</option>
+          {BADGES.map((b) => (
+            <option key={b} value={b}>
+              {b}
+            </option>
+          ))}
+        </select>
       </div>
 
       {filtered.length === 0 ? (
@@ -127,6 +148,18 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
                   {opp.commitment}
                 </span>
               </div>
+              {opp.badges.length > 0 && (
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {opp.badges.map((badge) => (
+                    <span
+                      key={badge}
+                      className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-800"
+                    >
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+              )}
               <h2 className="text-xl font-semibold text-slate-900">
                 {opp.title}
               </h2>

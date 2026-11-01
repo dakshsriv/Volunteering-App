@@ -45,6 +45,18 @@ export function OpportunityModal({ opportunity, onClose }: OpportunityModalProps
             <p className="mt-1 text-base font-medium text-sky-700">
               {opportunity.organization}
             </p>
+            {opportunity.badges.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {opportunity.badges.map((badge) => (
+                  <span
+                    key={badge}
+                    className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-800"
+                  >
+                    {badge}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <button
             onClick={onClose}

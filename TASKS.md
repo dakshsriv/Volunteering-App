@@ -10,6 +10,30 @@ Purpose: define every type of task club members can own, what the lead builds in
 
 ---
 
+## First Meeting Intake (ask BEFORE assigning anything)
+
+Goal: get enough info to assemble each member's task in minutes. Ask, then build their task from the templates in `mentor/templates/`.
+
+### Quick questions (3–5 min each)
+
+1. **"Have you written any code before? What have you tried?"** — Scratch, Python, a website, nothing. All valid answers.
+2. **"Which of these sounds more fun: making data, checking inputs, or building a button?"** — maps to Level 0, Level 1, Level 2.
+3. **"Do you want to start in Python or try JavaScript?"** — Python-first framing; JS is fine if they've done some.
+4. **"Do you care more about seeing your work on the live website, or the logic behind it?"** — guides UI tasks vs. logic tasks.
+5. **"How much time per week can you spend outside the meeting?"** — 0–1h → Level 0/1. 2h+ → Level 2/3.
+
+### Mini skill gauge (1 minute)
+
+Ask them to write a function (Python or JS) that returns `True` if a number is between 1 and 100. Gives you their floor instantly.
+
+### After the meeting
+
+- Match each answer to the nearest task card.
+- Assemble from `mentor/templates/` (they're generic; add the member's name/goal to the TODO).
+- Hand out at the next meeting — no gap.
+
+---
+
 ## Task Ladder (easiest → hardest)
 
 ### Level 0 — Python bridge tasks (no TypeScript needed)
@@ -38,8 +62,7 @@ Each delivered as a sandbox with a marked `// TODO` + 3–5 pre-written assertio
 
 One component per task, `fetch`/data flow pre-written by the lead.
 
-- Apply button (fill in the analytics POST + open external link)
-- Self-reported hours form
+- Apply button using the existing `ApplyLink` component
 - Presentational card/badge components
 - Filter pill UI bound to the existing list
 
@@ -153,7 +176,7 @@ Club teaches **Python**; the product is **TypeScript**. Frame it so members neve
 |---|---|
 | 0 | Python script that writes `opportunities.json` (dicts + `json.dump`) |
 | 1 | `isValidHours(hours)` returning `Number.isInteger(h) && h >= 1 && h <= 100` |
-| 2 | `ApplyButton` component with pre-written `fetch`, mentee fills the POST body |
+| 2 | Use the existing `ApplyLink` component inside a card or modal |
 | 3 | "My Hours" page reading `anonymousId` + hour log from localStorage |
 
 ---
@@ -202,25 +225,28 @@ console.log(isValidHours(12.5));   // false
 console.log(isValidHours(101));    // false
 ```
 
-### Level 2 — Apply button (scaffolded)
+### Level 2 — Apply link (scaffolded)
 
 ```tsx
 "use client";
 
-export function ApplyButton({ opportunityId }: { opportunityId: number }) {
-  function handleApply() {
-    // TODO: fill in the fetch call to POST /api/events/apply
-    fetch("/api/events/apply", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ opportunityId }), // ← finish this
-    });
-  }
+import { ApplyLink } from "@/components/ApplyLink";
 
+export function CardApplyButton({
+  opportunityId,
+  href,
+}: {
+  opportunityId: number;
+  href: string;
+}) {
   return (
-    <a href="https://forms.gle/demo" target="_blank" rel="noopener noreferrer" onClick={handleApply}>
+    <ApplyLink
+      opportunityId={opportunityId}
+      href={href}
+      className="rounded-full bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-700"
+    >
       Apply
-    </a>
+    </ApplyLink>
   );
 }
 ```
@@ -231,9 +257,10 @@ export function ApplyButton({ opportunityId }: { opportunityId: number }) {
 "use client";
 
 import { useState } from "react";
+import { getAnonymousId } from "@/lib/clientPreferences";
 
 export function MyHours() {
-  const [anonymousId] = useState(() => localStorage.getItem("anonymousId") ?? "unknown");
+  const [anonymousId] = useState(() => getAnonymousId());
   const [hours] = useState(() => JSON.parse(localStorage.getItem("myHours") ?? "[]"));
 
   const total = hours.reduce((sum: number, h: number) => sum + h, 0);
