@@ -4,7 +4,7 @@ const base = {
   status: "approved" as const,
   sourceId: null,
   sourceUrl: null,
-  reviewedAt: null,
+  submitterName: null,
   badges: [] as string[],
 };
 

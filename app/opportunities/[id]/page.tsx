@@ -80,6 +80,11 @@ export default async function OpportunityPage({
             <p className="mt-2 text-lg font-medium text-sky-700">
               {opportunity.organization}
             </p>
+            {opportunity.submitterName && (
+              <p className="mt-1 text-sm text-slate-500">
+                Submitted by {opportunity.submitterName}
+              </p>
+            )}
 
             <div className="mt-8 space-y-7">
               <section>

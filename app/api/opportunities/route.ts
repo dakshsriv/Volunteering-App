@@ -43,6 +43,8 @@ export async function POST(request: Request) {
   const title = typeof body.title === "string" ? body.title.trim() : "";
   const organization =
     typeof body.organization === "string" ? body.organization.trim() : "";
+  const submitterName =
+    typeof body.submitterName === "string" ? body.submitterName.trim() : "";
   const contactInfo =
     typeof body.contactInfo === "string" ? body.contactInfo.trim() : null;
   const description =
@@ -81,6 +83,8 @@ export async function POST(request: Request) {
   if (
     !title ||
     !organization ||
+    !submitterName ||
+    submitterName.length > 120 ||
     !description ||
     !category ||
     !commitment ||
@@ -91,7 +95,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "title, organization, description, category, commitment, link, and a positive hours value are required",
+          "title, organization, submitterName (max 120 characters), description, category, commitment, link, and a positive hours value are required",
       },
       { status: 400 }
     );
@@ -131,6 +135,7 @@ export async function POST(request: Request) {
       data: {
         title,
         organization,
+        submitterName,
         contactInfo,
         description,
         requirements,
@@ -141,7 +146,7 @@ export async function POST(request: Request) {
         hours,
         link,
         badges,
-        status: "pending",
+        status: "approved",
       },
     });
 

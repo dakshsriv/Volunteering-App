@@ -17,13 +17,15 @@ export default function SubmitOpportunityPage() {
     setStatus("submitting");
     setError("");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const badges = BADGES.filter(
       (b) => b !== "Popular" && formData.get(`badge-${b}`) === "on"
     );
 
     const body = {
       title: String(formData.get("title")).trim(),
+      submitterName: String(formData.get("submitterName")).trim(),
       organization: String(formData.get("organization")).trim(),
       description: String(formData.get("description")).trim(),
       requirements: String(formData.get("requirements")).trim(),
@@ -51,7 +53,7 @@ export default function SubmitOpportunityPage() {
       }
 
       setStatus("success");
-      event.currentTarget.reset();
+      form.reset();
     } catch {
       setError("Network error. Please try again.");
       setStatus("error");
@@ -69,16 +71,16 @@ export default function SubmitOpportunityPage() {
             Share a way to give back
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-            Submit a volunteering opportunity for review. Approved listings appear on the
-            public directory.
+            Submit a volunteering opportunity. It is published to the public directory
+            immediately, along with the name of the person who submitted it.
           </p>
         </header>
 
         {status === "success" ? (
           <div className="rounded-3xl border border-green-200 bg-green-50 p-8 text-center">
-            <h2 className="text-xl font-semibold text-green-900">Submitted for review</h2>
+            <h2 className="text-xl font-semibold text-green-900">Opportunity published</h2>
             <p className="mt-2 text-green-800">
-              A club mentor will review it before it goes live.
+              Your opportunity is now live on the directory.
             </p>
             <Link
               href="/opportunities"
@@ -100,6 +102,20 @@ export default function SubmitOpportunityPage() {
                 <input
                   id="title"
                   name="title"
+                  type="text"
+                  required
+                  maxLength={120}
+                  className="mt-1 w-full rounded-xl border border-sky-200 bg-sky-50/50 px-4 py-2.5 text-sm outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label htmlFor="submitterName" className="block text-sm font-medium text-slate-700">
+                  Your name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="submitterName"
+                  name="submitterName"
                   type="text"
                   required
                   maxLength={120}
@@ -265,7 +281,7 @@ export default function SubmitOpportunityPage() {
                 disabled={status === "submitting"}
                 className="rounded-full bg-sky-600 px-6 py-3 font-medium text-white transition hover:bg-sky-700 disabled:opacity-60"
               >
-                {status === "submitting" ? "Submitting..." : "Submit for review"}
+                {status === "submitting" ? "Submitting..." : "Publish opportunity"}
               </button>
             </div>
           </form>

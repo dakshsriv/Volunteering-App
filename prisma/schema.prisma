@@ -26,7 +26,7 @@ model Opportunity {
   badges       String[] @default([])
   sourceId     Int?
   sourceUrl    String?
-  reviewedAt   DateTime?
+  submitterName String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   source       OpportunitySource? @relation(fields: [sourceId], references: [id])
