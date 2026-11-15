@@ -7,6 +7,7 @@ import { BadgePill } from "@/components/BadgePill";
 import {
   BADGES,
   FLAG_BADGES,
+  formatEditedLabel,
   type FlagBadge,
   COMMITMENT_TYPES,
   VOLUNTEER_CATEGORIES,
@@ -198,6 +199,11 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
               <p className="mt-3 line-clamp-3 text-sm leading-7 text-slate-600">
                 {opp.description}
               </p>
+              {formatEditedLabel(opp.lastEditedAt, opp.lastEditedBy) && (
+                <p className="mt-3 text-xs text-slate-500">
+                  {formatEditedLabel(opp.lastEditedAt, opp.lastEditedBy)}
+                </p>
+              )}
               <div className="mt-4 flex items-center justify-between">
                 <p className="text-sm font-semibold text-slate-800">
                   {opp.hours} hours

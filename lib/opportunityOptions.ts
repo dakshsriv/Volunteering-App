@@ -33,3 +33,15 @@ export const FLAG_DESCRIPTIONS: Record<FlagBadge, string> = {
 export function isFlagBadge(value: unknown): value is FlagBadge {
   return FLAG_BADGES.includes(value as FlagBadge);
 }
+
+export function formatEditedLabel(
+  editedAt: Date | null,
+  editedBy: string | null
+): string | null {
+  if (!editedAt) return null;
+
+  const date = new Intl.DateTimeFormat("en-CA", { dateStyle: "medium" }).format(
+    editedAt
+  );
+  return editedBy ? `Edited ${date} by ${editedBy}` : `Edited ${date}`;
+}

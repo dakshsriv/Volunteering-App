@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { FiArrowLeft, FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import { ApplyLink } from "@/components/ApplyLink";
 import { BadgePill } from "@/components/BadgePill";
+import { DeleteButton } from "@/components/DeleteButton";
 import { FlagControls } from "@/components/FlagControls";
 import { DEMO_OPPORTUNITIES } from "@/lib/demoOpportunities";
 import { prisma } from "@/lib/prisma";
@@ -140,6 +141,8 @@ export default async function OpportunityPage({
               opportunityId={opportunity.id}
               badges={opportunity.badges}
             />
+
+            <DeleteButton opportunityId={opportunity.id} />
           </article>
 
           <aside className="h-fit rounded-3xl border border-sky-200 bg-sky-50/80 p-6 shadow-sm">

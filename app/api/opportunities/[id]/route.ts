@@ -81,3 +81,49 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: "DATABASE_URL is not configured" },
+      { status: 503 }
+    );
+  }
+
+  const ipHash = hashIp(getClientIp(request));
+  if (!rateLimit(`delete:${ipHash}`, EDIT_LIMIT_PER_IP, WINDOW_MS)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  const id = Number.parseInt((await params).id, 10);
+  if (!Number.isInteger(id) || id <= 0) {
+    return NextResponse.json({ error: "Valid id is required" }, { status: 400 });
+  }
+
+  try {
+    const existing = await prisma.opportunity.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      return NextResponse.json({ error: "Opportunity not found" }, { status: 404 });
+    }
+
+    // ApplyEvent has a non-cascading foreign key, so its rows must go first.
+    await prisma.$transaction([
+      prisma.applyEvent.deleteMany({ where: { opportunityId: id } }),
+      prisma.opportunity.delete({ where: { id } }),
+    ]);
+
+    return NextResponse.json({ deleted: id });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Database write failed" },
+      { status: 500 }
+    );
+  }
+}

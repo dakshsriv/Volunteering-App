@@ -1,5 +1,6 @@
 "use client";
 
+import { formatEditedLabel } from "@/lib/opportunityOptions";
 import { BadgePill } from "./BadgePill";
 import { useEffect } from "react";
 import type { Opportunity } from "@prisma/client";
@@ -46,6 +47,11 @@ export function OpportunityModal({ opportunity, onClose }: OpportunityModalProps
             <p className="mt-1 text-base font-medium text-sky-700">
               {opportunity.organization}
             </p>
+            {formatEditedLabel(opportunity.lastEditedAt, opportunity.lastEditedBy) && (
+              <p className="mt-1 text-sm text-slate-500">
+                {formatEditedLabel(opportunity.lastEditedAt, opportunity.lastEditedBy)}
+              </p>
+            )}
             {opportunity.badges.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {opportunity.badges.map((badge) => (
