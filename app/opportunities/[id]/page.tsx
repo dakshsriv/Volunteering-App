@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FiArrowLeft, FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import { ApplyLink } from "@/components/ApplyLink";
+import { BadgePill } from "@/components/BadgePill";
+import { FlagControls } from "@/components/FlagControls";
 import { DEMO_OPPORTUNITIES } from "@/lib/demoOpportunities";
 import { prisma } from "@/lib/prisma";
 
@@ -65,12 +67,7 @@ export default async function OpportunityPage({
             {opportunity.badges.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {opportunity.badges.map((badge) => (
-                  <span
-                    key={badge}
-                    className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-800"
-                  >
-                    {badge}
-                  </span>
+                  <BadgePill key={badge} badge={badge} />
                 ))}
               </div>
             )}
@@ -83,6 +80,14 @@ export default async function OpportunityPage({
             {opportunity.submitterName && (
               <p className="mt-1 text-sm text-slate-500">
                 Submitted by {opportunity.submitterName}
+              </p>
+            )}
+            {opportunity.lastEditedBy && opportunity.lastEditedAt && (
+              <p className="mt-1 text-sm text-slate-500">
+                Last edited by {opportunity.lastEditedBy} on{" "}
+                {new Intl.DateTimeFormat("en-CA", { dateStyle: "medium" }).format(
+                  opportunity.lastEditedAt
+                )}
               </p>
             )}
 
@@ -123,6 +128,18 @@ export default async function OpportunityPage({
             >
               Apply externally
             </ApplyLink>
+
+            <Link
+              href={`/opportunities/${opportunity.id}/edit`}
+              className="ml-3 mt-8 inline-flex rounded-full border border-sky-200 px-6 py-3 text-center font-medium text-sky-800 transition hover:bg-sky-50"
+            >
+              Edit listing
+            </Link>
+
+            <FlagControls
+              opportunityId={opportunity.id}
+              badges={opportunity.badges}
+            />
           </article>
 
           <aside className="h-fit rounded-3xl border border-sky-200 bg-sky-50/80 p-6 shadow-sm">

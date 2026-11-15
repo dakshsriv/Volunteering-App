@@ -9,6 +9,7 @@ import {
   type CommitmentType,
   type OpportunityCategory,
 } from "@/lib/clientPreferences";
+import { isFlagBadge } from "@/lib/opportunityOptions";
 import { ApplyLink } from "./ApplyLink";
 import { OpportunityModal } from "./OpportunityModal";
 
@@ -28,7 +29,8 @@ export function RecommendedOpportunities({
   const preferences = parsePreferences(storedPreferences);
 
   const recommendations = useMemo(() => {
-    return [...opportunities]
+    return opportunities
+      .filter((opp) => !opp.badges.some(isFlagBadge))
       .sort((first, second) => {
         const firstScore =
           (preferences.categories.includes(

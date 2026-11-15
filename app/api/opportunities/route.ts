@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import {
-  BADGES,
-  COMMITMENT_TYPES,
-  UNSPECIFIED_LOCATION_LABEL,
-  VOLUNTEER_CATEGORIES,
-} from "@/lib/opportunityOptions";
+import { parseOpportunityInput, parsePersonName } from "@/lib/opportunityInput";
 
 export async function GET() {
   if (!prisma) {
@@ -38,114 +33,33 @@ export async function POST(request: Request) {
     );
   }
 
-  const body = await request.json();
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
-  const title = typeof body.title === "string" ? body.title.trim() : "";
-  const organization =
-    typeof body.organization === "string" ? body.organization.trim() : "";
-  const submitterName =
-    typeof body.submitterName === "string" ? body.submitterName.trim() : "";
-  const contactInfo =
-    typeof body.contactInfo === "string" ? body.contactInfo.trim() : null;
-  const description =
-    typeof body.description === "string" ? body.description.trim() : "";
-  const requirements =
-    typeof body.requirements === "string" ? body.requirements.trim() : "";
-  const location =
-    typeof body.location === "string" && body.location.trim()
-      ? body.location.trim()
-      : UNSPECIFIED_LOCATION_LABEL;
-  const category = typeof body.category === "string" ? body.category.trim() : "";
-  const commitment =
-    typeof body.commitment === "string" ? body.commitment.trim() : "";
-  const eventDate =
-    typeof body.eventDate === "string" && body.eventDate.trim()
-      ? new Date(body.eventDate)
-      : null;
-  const link = typeof body.link === "string" ? body.link.trim() : "";
-  const hours =
-    typeof body.hours === "number"
-      ? body.hours
-      : Number.parseInt(
-          typeof body.hours === "string" ? body.hours : "",
-          10
-        );
-
-  const badges = Array.isArray(body.badges)
-    ? body.badges.filter(
-        (b: unknown): b is string =>
-          typeof b === "string" &&
-          BADGES.includes(b as (typeof BADGES)[number]) &&
-          b !== "Popular"
-      )
-    : [];
-
-  if (
-    !title ||
-    !organization ||
-    !submitterName ||
-    submitterName.length > 120 ||
-    !description ||
-    !category ||
-    !commitment ||
-    !link ||
-    Number.isNaN(hours) ||
-    hours <= 0
-  ) {
+  const submitterName = parsePersonName(body.submitterName);
+  if (!submitterName) {
     return NextResponse.json(
-      {
-        error:
-          "title, organization, submitterName (max 120 characters), description, category, commitment, link, and a positive hours value are required",
-      },
+      { error: "submitterName is required (max 120 characters)" },
       { status: 400 }
     );
   }
 
-  if (eventDate && Number.isNaN(eventDate.getTime())) {
-    return NextResponse.json(
-      { error: "eventDate must be a valid date and time" },
-      { status: 400 }
-    );
+  const parsed = parseOpportunityInput(body);
+  if (!parsed.ok) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
 
-  if (
-    !VOLUNTEER_CATEGORIES.includes(
-      category as (typeof VOLUNTEER_CATEGORIES)[number]
-    )
-  ) {
-    return NextResponse.json(
-      { error: "category must be one of the supported values" },
-      { status: 400 }
-    );
-  }
-
-  if (
-    !COMMITMENT_TYPES.includes(
-      commitment as (typeof COMMITMENT_TYPES)[number]
-    )
-  ) {
-    return NextResponse.json(
-      { error: "commitment must be one of the supported values" },
-      { status: 400 }
-    );
-  }
+  const { contactInfo, eventDate, ...fields } = parsed.data;
 
   try {
     const opportunity = await prisma.opportunity.create({
       data: {
-        title,
-        organization,
+        ...fields,
         submitterName,
-        contactInfo,
-        description,
-        requirements,
-        location,
-        category,
-        commitment,
-        eventDate,
-        hours,
-        link,
-        badges,
+        contactInfo: contactInfo ?? null,
+        eventDate: eventDate ?? null,
         status: "approved",
       },
     });

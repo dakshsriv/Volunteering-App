@@ -1,5 +1,6 @@
 "use client";
 
+import { BadgePill } from "./BadgePill";
 import { useEffect } from "react";
 import type { Opportunity } from "@prisma/client";
 import { FiMapPin, FiX } from "react-icons/fi";
@@ -48,12 +49,7 @@ export function OpportunityModal({ opportunity, onClose }: OpportunityModalProps
             {opportunity.badges.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {opportunity.badges.map((badge) => (
-                  <span
-                    key={badge}
-                    className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-800"
-                  >
-                    {badge}
-                  </span>
+                  <BadgePill key={badge} badge={badge} />
                 ))}
               </div>
             )}

@@ -3,8 +3,11 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Opportunity } from "@prisma/client";
+import { BadgePill } from "@/components/BadgePill";
 import {
   BADGES,
+  FLAG_BADGES,
+  type FlagBadge,
   COMMITMENT_TYPES,
   VOLUNTEER_CATEGORIES,
 } from "@/lib/opportunityOptions";
@@ -20,6 +23,7 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
   const [dateFilter, setDateFilter] = useState("");
   const [minimumHours, setMinimumHours] = useState("");
   const [badgeFilter, setBadgeFilter] = useState("");
+  const [shownFlags, setShownFlags] = useState<FlagBadge[]>([]);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -43,13 +47,22 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
       const matchesBadge =
         !badgeFilter || opp.badges.includes(badgeFilter);
 
+      // Flagged listings are hidden unless that flag is shown or explicitly selected.
+      const hiddenByFlag = FLAG_BADGES.some(
+        (flag) =>
+          opp.badges.includes(flag) &&
+          !shownFlags.includes(flag) &&
+          badgeFilter !== flag
+      );
+
       return (
         matchesSearch &&
         matchesCategory &&
         matchesCommitment &&
         matchesDate &&
         matchesDuration &&
-        matchesBadge
+        matchesBadge &&
+        !hiddenByFlag
       );
     });
   }, [
@@ -60,6 +73,7 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
     dateFilter,
     minimumHours,
     badgeFilter,
+    shownFlags,
   ]);
   return (
     <div className="space-y-6">
@@ -119,12 +133,33 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
           className="w-full rounded-xl border border-sky-200 bg-sky-50/50 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 sm:w-44"
         >
           <option value="">All badges</option>
-          {BADGES.map((b) => (
+          {[...BADGES, ...FLAG_BADGES].map((b) => (
             <option key={b} value={b}>
               {b}
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4 rounded-3xl border border-sky-100 bg-white/80 px-4 py-3 text-sm text-slate-700 shadow-sm">
+        <span className="font-medium">Show flagged listings:</span>
+        {FLAG_BADGES.map((flag) => (
+          <label key={flag} className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={shownFlags.includes(flag)}
+              onChange={(e) =>
+                setShownFlags((current) =>
+                  e.target.checked
+                    ? [...current, flag]
+                    : current.filter((f) => f !== flag)
+                )
+              }
+              className="h-4 w-4 accent-sky-600"
+            />
+            {flag}
+          </label>
+        ))}
       </div>
 
       {filtered.length === 0 ? (
@@ -150,12 +185,7 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
               {opp.badges.length > 0 && (
                 <div className="mb-3 flex flex-wrap gap-2">
                   {opp.badges.map((badge) => (
-                    <span
-                      key={badge}
-                      className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-800"
-                    >
-                      {badge}
-                    </span>
+                    <BadgePill key={badge} badge={badge} />
                   ))}
                 </div>
               )}

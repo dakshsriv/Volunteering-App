@@ -27,6 +27,8 @@ model Opportunity {
   sourceId     Int?
   sourceUrl    String?
   submitterName String?
+  lastEditedBy String?
+  lastEditedAt DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   source       OpportunitySource? @relation(fields: [sourceId], references: [id])

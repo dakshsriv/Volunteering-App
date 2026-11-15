@@ -5,6 +5,8 @@ const base = {
   sourceId: null,
   sourceUrl: null,
   submitterName: null,
+  lastEditedBy: null,
+  lastEditedAt: null,
   badges: [] as string[],
 };
 
