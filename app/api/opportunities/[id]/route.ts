@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { parseOpportunityInput, parsePersonName } from "@/lib/opportunityInput";
 import { isFlagBadge } from "@/lib/opportunityOptions";
 import { getClientIp, hashIp, rateLimit } from "@/lib/security";
+import { checkWritePassphrase } from "@/lib/writeAccess";
 
 const EDIT_LIMIT_PER_IP = 10;
 const WINDOW_MS = 60_000;
@@ -22,6 +23,9 @@ export async function PATCH(
   if (!rateLimit(`edit:${ipHash}`, EDIT_LIMIT_PER_IP, WINDOW_MS)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
+
+  const denied = checkWritePassphrase(request);
+  if (denied) return denied;
 
   const id = Number.parseInt((await params).id, 10);
   if (!Number.isInteger(id) || id <= 0) {
@@ -97,6 +101,9 @@ export async function DELETE(
   if (!rateLimit(`delete:${ipHash}`, EDIT_LIMIT_PER_IP, WINDOW_MS)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
+
+  const denied = checkWritePassphrase(request);
+  if (denied) return denied;
 
   const id = Number.parseInt((await params).id, 10);
   if (!Number.isInteger(id) || id <= 0) {

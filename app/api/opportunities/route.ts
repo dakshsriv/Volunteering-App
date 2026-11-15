@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { parseOpportunityInput, parsePersonName } from "@/lib/opportunityInput";
+import { getClientIp, hashIp, rateLimit } from "@/lib/security";
+import { checkWritePassphrase } from "@/lib/writeAccess";
+
+const WRITE_LIMIT_PER_IP = 10;
+const WINDOW_MS = 60_000;
 
 export async function GET() {
   if (!prisma) {
@@ -32,6 +37,14 @@ export async function POST(request: Request) {
       { status: 503 }
     );
   }
+
+  const ipHash = hashIp(getClientIp(request));
+  if (!rateLimit(`create:${ipHash}`, WRITE_LIMIT_PER_IP, WINDOW_MS)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  const denied = checkWritePassphrase(request);
+  if (denied) return denied;
 
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {

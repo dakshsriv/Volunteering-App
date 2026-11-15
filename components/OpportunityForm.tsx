@@ -86,7 +86,10 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
         isEdit ? `/api/opportunities/${opportunityId}` : "/api/opportunities",
         {
           method: isEdit ? "PATCH" : "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-passphrase": String(formData.get("passphrase")).trim(),
+          },
           body: JSON.stringify(body),
         }
       );
@@ -144,6 +147,16 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
               Shown as the last editor of this listing.
             </p>
           )}
+        </div>
+
+        <div className="sm:col-span-2">
+          <label htmlFor="passphrase" className={labelClass}>
+            School passphrase <Required />
+          </label>
+          <input id="passphrase" name="passphrase" type="password" required autoComplete="off" className={inputClass} />
+          <p className="mt-1 text-xs text-slate-500">
+            Ask your school for the passphrase. It keeps spam out.
+          </p>
         </div>
 
         <div className="sm:col-span-2">
