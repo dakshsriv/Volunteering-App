@@ -5,6 +5,7 @@ const base = {
   sourceId: null,
   sourceUrl: null,
   submitterName: null,
+  imageLinks: [] as string[],
   lastEditedBy: null,
   lastEditedAt: null,
   badges: [] as string[],

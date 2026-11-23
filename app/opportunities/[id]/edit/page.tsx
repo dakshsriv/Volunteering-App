@@ -48,6 +48,9 @@ export default async function EditOpportunityPage({
             commitment: opportunity.commitment,
             hours: opportunity.hours,
             link: opportunity.link,
+            imageLinks: Array.isArray(opportunity.imageLinks)
+              ? opportunity.imageLinks
+              : [],
             badges: opportunity.badges,
           }}
         />

@@ -5,6 +5,7 @@ import { FiArrowLeft, FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import { ApplyLink } from "@/components/ApplyLink";
 import { BadgePill } from "@/components/BadgePill";
 import { DeleteButton } from "@/components/DeleteButton";
+import { OpportunityImageGallery } from "@/components/OpportunityImageGallery";
 import { FlagControls } from "@/components/FlagControls";
 import { DEMO_OPPORTUNITIES } from "@/lib/demoOpportunities";
 import { prisma } from "@/lib/prisma";
@@ -91,6 +92,11 @@ export default async function OpportunityPage({
                 )}
               </p>
             )}
+
+            <OpportunityImageGallery
+              imageLinks={opportunity.imageLinks}
+              title={opportunity.title}
+            />
 
             <div className="mt-8 space-y-7">
               <section>

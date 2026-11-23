@@ -15,6 +15,7 @@ export interface OpportunityInput {
   commitment: string;
   hours: number;
   link: string;
+  imageLinks: string[];
   badges: string[];
   contactInfo?: string | null;
   eventDate?: Date | null;
@@ -37,6 +38,21 @@ export function parseOpportunityInput(body: Record<string, unknown>): ParseResul
   const category = text(body.category);
   const commitment = text(body.commitment);
   const link = text(body.link);
+  const imageLinks = Array.isArray(body.imageLinks)
+    ? body.imageLinks
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.trim())
+        .filter((value) => {
+          if (!value) return false;
+          try {
+            const url = new URL(value);
+            return url.protocol === "http:" || url.protocol === "https:";
+          } catch {
+            return false;
+          }
+        })
+        .slice(0, 5)
+    : [];
   const hours =
     typeof body.hours === "number"
       ? body.hours
@@ -100,6 +116,7 @@ export function parseOpportunityInput(body: Record<string, unknown>): ParseResul
       commitment,
       hours,
       link,
+      imageLinks,
       badges,
       contactInfo,
       eventDate,

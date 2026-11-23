@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Opportunity } from "@prisma/client";
 import { BadgePill } from "@/components/BadgePill";
+import { OpportunityImageGallery } from "@/components/OpportunityImageGallery";
 import {
   BADGES,
   FLAG_BADGES,
@@ -193,6 +194,15 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
               <h2 className="text-xl font-semibold text-slate-900">
                 {opp.title}
               </h2>
+              {Array.isArray(opp.imageLinks) && opp.imageLinks.length > 0 && (
+                <div className="mt-3">
+                  <OpportunityImageGallery
+                    imageLinks={opp.imageLinks}
+                    title={opp.title}
+                    compact
+                  />
+                </div>
+              )}
               <p className="mt-1 text-sm font-medium text-sky-700">
                 {opp.organization}
               </p>
