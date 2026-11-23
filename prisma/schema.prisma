@@ -22,6 +22,7 @@ model Opportunity {
   eventDate    DateTime?
   hours        Int
   link         String
+  imageLinks   String[] @default([])
   status       String   @default("approved")
   badges       String[] @default([])
   sourceId     Int?

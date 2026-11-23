@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import type { Opportunity } from "@prisma/client";
 import { FiMapPin, FiX } from "react-icons/fi";
 import { ApplyLink } from "./ApplyLink";
+import { OpportunityImageGallery } from "./OpportunityImageGallery";
 
 interface OpportunityModalProps {
   opportunity: Opportunity;
@@ -70,6 +71,10 @@ export function OpportunityModal({ opportunity, onClose }: OpportunityModalProps
         </div>
 
         <div className="mt-6 space-y-5">
+          <OpportunityImageGallery
+            imageLinks={opportunity.imageLinks}
+            title={opportunity.title}
+          />
           <div className="flex flex-wrap gap-3">
             <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
               {opportunity.commitment}

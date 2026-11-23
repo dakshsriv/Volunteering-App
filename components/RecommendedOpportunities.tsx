@@ -12,6 +12,7 @@ import {
 import { isFlagBadge } from "@/lib/opportunityOptions";
 import { ApplyLink } from "./ApplyLink";
 import { OpportunityModal } from "./OpportunityModal";
+import { OpportunityImageGallery } from "./OpportunityImageGallery";
 
 interface RecommendedOpportunitiesProps {
   opportunities: Opportunity[];
@@ -85,7 +86,7 @@ export function RecommendedOpportunities({
           <article
             key={opportunity.id}
             onClick={() => setSelected(opportunity)}
-            className="cursor-pointer rounded-3xl border border-sky-100 bg-white/80 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            className="flex h-full cursor-pointer flex-col rounded-3xl border border-sky-100 bg-white/80 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
             <span className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-sky-700">
               {opportunity.category}
@@ -96,7 +97,16 @@ export function RecommendedOpportunities({
             <p className="mt-2 text-sm font-medium text-sky-700">
               {opportunity.organization}
             </p>
-            <div className="mt-5 flex items-center justify-between gap-2 text-sm">
+            {Array.isArray(opportunity.imageLinks) && opportunity.imageLinks.length > 0 && (
+              <div className="mt-4">
+                <OpportunityImageGallery
+                  imageLinks={opportunity.imageLinks}
+                  title={opportunity.title}
+                  compact
+                />
+              </div>
+            )}
+            <div className="mt-auto flex items-center justify-between gap-2 pt-5 text-sm">
               <span className="font-semibold text-slate-800">
                 {opportunity.hours} hours
               </span>

@@ -1,0 +1,1 @@
+ALTER TABLE "Opportunity" ADD COLUMN "imageLinks" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];

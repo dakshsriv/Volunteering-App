@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Opportunity } from "@prisma/client";
 import { BadgePill } from "@/components/BadgePill";
+import { OpportunityImageGallery } from "@/components/OpportunityImageGallery";
 import {
   BADGES,
   FLAG_BADGES,
@@ -173,7 +174,7 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
             <Link
               key={opp.id}
               href={`/opportunities/${opp.id}`}
-              className="cursor-pointer rounded-3xl border border-sky-100 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="flex h-full cursor-pointer flex-col rounded-3xl border border-sky-100 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="mb-3 flex items-center justify-between gap-3">
                 <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-blue-900">
@@ -193,6 +194,15 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
               <h2 className="text-xl font-semibold text-slate-900">
                 {opp.title}
               </h2>
+              {Array.isArray(opp.imageLinks) && opp.imageLinks.length > 0 && (
+                <div className="mt-3">
+                  <OpportunityImageGallery
+                    imageLinks={opp.imageLinks}
+                    title={opp.title}
+                    compact
+                  />
+                </div>
+              )}
               <p className="mt-1 text-sm font-medium text-sky-700">
                 {opp.organization}
               </p>
@@ -204,7 +214,7 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
                   {formatEditedLabel(opp.lastEditedAt, opp.lastEditedBy)}
                 </p>
               )}
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-auto flex items-center justify-between pt-4">
                 <p className="text-sm font-semibold text-slate-800">
                   {opp.hours} hours
                 </p>

@@ -15,6 +15,7 @@ export interface OpportunityInput {
   commitment: string;
   hours: number;
   link: string;
+  imageLinks: string[];
   badges: string[];
   contactInfo?: string | null;
   eventDate?: Date | null;
@@ -28,6 +29,47 @@ function text(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
+export function normalizeWebUrl(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+
+  let candidate = value.trim();
+  if (!candidate) return null;
+
+  if (candidate.startsWith("//")) {
+    candidate = `https:${candidate}`;
+  } else if (!/^[a-z][a-z0-9+.-]*:/i.test(candidate)) {
+    candidate = `https://${candidate}`;
+  }
+
+  try {
+    const url = new URL(candidate);
+    if (!["http:", "https:"].includes(url.protocol)) return null;
+    if (url.hostname.length === 0) return null;
+
+    const cleaned = url.toString();
+    return cleaned.length <= 2048 ? cleaned : null;
+  } catch {
+    return null;
+  }
+}
+
+export function normalizeImageLinks(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+
+  const links: string[] = [];
+  const seen = new Set<string>();
+
+  for (const candidate of value) {
+    const cleaned = normalizeWebUrl(candidate);
+    if (!cleaned || seen.has(cleaned)) continue;
+    seen.add(cleaned);
+    links.push(cleaned);
+    if (links.length === 5) break;
+  }
+
+  return links;
+}
+
 export function parseOpportunityInput(body: Record<string, unknown>): ParseResult {
   const title = text(body.title);
   const organization = text(body.organization);
@@ -36,7 +78,8 @@ export function parseOpportunityInput(body: Record<string, unknown>): ParseResul
   const location = text(body.location) || UNSPECIFIED_LOCATION_LABEL;
   const category = text(body.category);
   const commitment = text(body.commitment);
-  const link = text(body.link);
+  const link = normalizeWebUrl(body.link);
+  const imageLinks = normalizeImageLinks(body.imageLinks);
   const hours =
     typeof body.hours === "number"
       ? body.hours
@@ -100,6 +143,7 @@ export function parseOpportunityInput(body: Record<string, unknown>): ParseResul
       commitment,
       hours,
       link,
+      imageLinks,
       badges,
       contactInfo,
       eventDate,

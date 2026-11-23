@@ -8,6 +8,10 @@ import {
   COMMITMENT_TYPES,
   VOLUNTEER_CATEGORIES,
 } from "@/lib/opportunityOptions";
+import {
+  normalizeImageLinks,
+  normalizeWebUrl,
+} from "@/lib/opportunityInput";
 
 export interface OpportunityFormValues {
   title: string;
@@ -19,6 +23,7 @@ export interface OpportunityFormValues {
   commitment: string;
   hours: number | "";
   link: string;
+  imageLinks: string[];
   badges: string[];
 }
 
@@ -32,6 +37,7 @@ const EMPTY_VALUES: OpportunityFormValues = {
   commitment: "",
   hours: "",
   link: "",
+  imageLinks: [],
   badges: [],
 };
 
@@ -55,6 +61,9 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
   const values = initial ?? EMPTY_VALUES;
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [error, setError] = useState("");
+  const [imageLinks, setImageLinks] = useState<string[]>(
+    (Array.isArray(values.imageLinks) ? values.imageLinks : []).slice(0, 5)
+  );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -77,7 +86,8 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
       category: String(formData.get("category")),
       commitment: String(formData.get("commitment")),
       hours: Number(formData.get("hours")),
-      link: String(formData.get("link")).trim(),
+      link: normalizeWebUrl(formData.get("link")) ?? "",
+      imageLinks: normalizeImageLinks(imageLinks),
       badges,
     };
 
@@ -223,8 +233,84 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
           <label htmlFor="link" className={labelClass}>
             Official sign-up link <Required />
           </label>
-          <input id="link" name="link" type="url" required placeholder="https://..." defaultValue={values.link} className={inputClass} />
+          <input
+            id="link"
+            name="link"
+            type="text"
+            inputMode="url"
+            required
+            placeholder="https://..."
+            defaultValue={values.link}
+            onBlur={(event) => {
+              const cleaned = normalizeWebUrl(event.currentTarget.value);
+              if (cleaned) event.currentTarget.value = cleaned;
+            }}
+            className={inputClass}
+          />
         </div>
+
+        <fieldset className="sm:col-span-2">
+          <legend className={labelClass}>Image links <span className="font-normal text-slate-500">(optional, up to 5)</span></legend>
+          <div className="mt-2 space-y-3">
+            {imageLinks.map((link, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <input
+                  id={`imageLink-${index}`}
+                  name={`imageLink-${index}`}
+                  type="text"
+                  inputMode="url"
+                  maxLength={2048}
+                  placeholder={`https://.../image-${index + 1}.jpg`}
+                  value={link}
+                  onChange={(event) =>
+                    setImageLinks((current) =>
+                      current.map((currentLink, currentIndex) =>
+                        currentIndex === index ? event.target.value : currentLink
+                      )
+                    )
+                  }
+                  onBlur={(event) => {
+                    const cleaned = normalizeWebUrl(event.currentTarget.value);
+                    setImageLinks((current) =>
+                      current.map((currentLink, currentIndex) =>
+                        currentIndex === index
+                          ? cleaned ?? ""
+                          : currentLink
+                      )
+                    );
+                  }}
+                  className={inputClass}
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setImageLinks((current) =>
+                      current.filter((_, currentIndex) => currentIndex !== index)
+                    )
+                  }
+                  className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-red-200 bg-red-50 text-xl font-semibold text-red-700 transition hover:bg-red-100"
+                  aria-label={`Remove image link ${index + 1}`}
+                  title="Remove image"
+                >
+                  -
+                </button>
+              </div>
+            ))}
+            {imageLinks.length < 5 && (
+              <button
+                type="button"
+                onClick={() =>
+                  setImageLinks((current) => [...current, ""])
+                }
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-sky-200 bg-sky-50 text-xl font-semibold text-sky-700 transition hover:bg-sky-100"
+                aria-label="Add another image link"
+                title="Add image"
+              >
+                +
+              </button>
+            )}
+          </div>
+        </fieldset>
 
         <div className="sm:col-span-2">
           <label htmlFor="description" className={labelClass}>
