@@ -8,6 +8,10 @@ import {
   COMMITMENT_TYPES,
   VOLUNTEER_CATEGORIES,
 } from "@/lib/opportunityOptions";
+import {
+  normalizeImageLinks,
+  normalizeWebUrl,
+} from "@/lib/opportunityInput";
 
 export interface OpportunityFormValues {
   title: string;
@@ -82,8 +86,8 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
       category: String(formData.get("category")),
       commitment: String(formData.get("commitment")),
       hours: Number(formData.get("hours")),
-      link: String(formData.get("link")).trim(),
-      imageLinks: imageLinks.map((link) => link.trim()).filter(Boolean),
+      link: normalizeWebUrl(formData.get("link")) ?? "",
+      imageLinks: normalizeImageLinks(imageLinks),
       badges,
     };
 
@@ -229,7 +233,20 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
           <label htmlFor="link" className={labelClass}>
             Official sign-up link <Required />
           </label>
-          <input id="link" name="link" type="url" required placeholder="https://..." defaultValue={values.link} className={inputClass} />
+          <input
+            id="link"
+            name="link"
+            type="text"
+            inputMode="url"
+            required
+            placeholder="https://..."
+            defaultValue={values.link}
+            onBlur={(event) => {
+              const cleaned = normalizeWebUrl(event.currentTarget.value);
+              if (cleaned) event.currentTarget.value = cleaned;
+            }}
+            className={inputClass}
+          />
         </div>
 
         <fieldset className="sm:col-span-2">
@@ -240,7 +257,8 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
                 <input
                   id={`imageLink-${index}`}
                   name={`imageLink-${index}`}
-                  type="url"
+                  type="text"
+                  inputMode="url"
                   maxLength={2048}
                   placeholder={`https://.../image-${index + 1}.jpg`}
                   value={link}
@@ -251,6 +269,16 @@ export function OpportunityForm({ opportunityId, initial }: OpportunityFormProps
                       )
                     )
                   }
+                  onBlur={(event) => {
+                    const cleaned = normalizeWebUrl(event.currentTarget.value);
+                    setImageLinks((current) =>
+                      current.map((currentLink, currentIndex) =>
+                        currentIndex === index
+                          ? cleaned ?? ""
+                          : currentLink
+                      )
+                    );
+                  }}
                   className={inputClass}
                 />
                 <button

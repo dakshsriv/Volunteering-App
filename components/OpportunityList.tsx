@@ -174,7 +174,7 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
             <Link
               key={opp.id}
               href={`/opportunities/${opp.id}`}
-              className="cursor-pointer rounded-3xl border border-sky-100 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="flex h-full cursor-pointer flex-col rounded-3xl border border-sky-100 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="mb-3 flex items-center justify-between gap-3">
                 <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-blue-900">
@@ -214,7 +214,7 @@ export function OpportunityList({ opportunities }: OpportunityListProps) {
                   {formatEditedLabel(opp.lastEditedAt, opp.lastEditedBy)}
                 </p>
               )}
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-auto flex items-center justify-between pt-4">
                 <p className="text-sm font-semibold text-slate-800">
                   {opp.hours} hours
                 </p>

@@ -15,7 +15,16 @@ export function OpportunityImageGallery({
   compact = false,
 }: OpportunityImageGalleryProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const links = Array.isArray(imageLinks) ? imageLinks.slice(0, 5) : [];
+  const links = (Array.isArray(imageLinks) ? imageLinks.slice(0, 5) : []).filter(
+    (link) => {
+      try {
+        const protocol = new URL(link).protocol;
+        return protocol === "http:" || protocol === "https:";
+      } catch {
+        return false;
+      }
+    },
+  );
   if (links.length === 0) return null;
 
   function scroll(direction: "left" | "right") {
